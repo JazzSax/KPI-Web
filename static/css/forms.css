@@ -1,0 +1,19 @@
+.form-table {
+  width: 100%;
+  border-collapse: collapse;
+}
+.form-table th,
+.form-table td {
+  border: 1px solid #ddd;
+  padding: 8px;
+  text-align: center;
+}
+.form-table th {
+  background-color: #f4f4f4;
+}
+.form-table .actual {
+  background-color: #f8d7da; /* Red for actual values */
+}
+.form-table .target {
+  background-color: #d4edda; /* Green for target values */
+}

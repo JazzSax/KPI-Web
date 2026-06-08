@@ -1,0 +1,77 @@
+{% load static %} {% block content %}
+<h1>Select a KPI</h1>
+<form method="post" onsubmit="logSubmit(event)">
+  {% csrf_token %}
+  <label for="kpi-select">Choose a KPI:</label>
+  <select id="kpi-select" name="kpi">
+    {% for kpi in kpi_names %}
+    <option value="{{ kpi.kpi_code }}">{{ kpi.kpi_name }}</option>
+    {% endfor %}
+  </select>
+
+  <label for="calamba-kpi-select">Choose a Calamba KPI:</label>
+  <select id="calamba-kpi-select" name="calamba_kpi">
+    {% if calamba_kpis %} {% for calamba_kpi in calamba_kpis %}
+    <option value="{{ calamba_kpi.kpi_id }}">
+      {{ calamba_kpi.calamba_kpi }}
+    </option>
+    {% endfor %} {% endif %}
+  </select>
+
+  <label for="year-select">Choose a Year:</label>
+  <select id="year-select" name="year">
+    {% if years %} {% for year in years %}
+    <option value="{{ year }}">{{ year }}</option>
+    {% endfor %} {% endif %}
+  </select>
+
+  <button type="submit" class="btn btn-primary">Filter</button>
+</form>
+<!-- Include the forms.html file -->
+{% include "kpi/kpi_form.html" %}
+<script>
+  // function updateCalambaKPIs() {
+  //   var kpiCode = document.getElementById("kpi-select").value;
+  //   if (kpiCode) {
+  //     $.ajax({
+  //       url: '{% url "ajax_get_calamba_kpis" %}',
+  //       data: {
+  //         kpi_code: kpiCode,
+  //       },
+  //       success: function (data) {
+  //         var calambaKpiSelect = document.getElementById("calamba-kpi-select");
+  //         calambaKpiSelect.innerHTML = ""; // Clear all options
+  //         data.forEach(function (item) {
+  //           var option = document.createElement("option");
+  //           option.value = item.kpi_id;
+  //           option.text = item.calamba_kpi;
+  //           calambaKpiSelect.add(option);
+  //         });
+  //       },
+  //     });
+  //   }
+  // }
+
+  // function updateYears() {
+  //   var calambaKpiId = document.getElementById("calamba-kpi-select").value;
+  //   if (calambaKpiId) {
+  //     $.ajax({
+  //       url: '{% url "ajax_get_years" %}',
+  //       data: {
+  //         kpi_id: calambaKpiId,
+  //       },
+  //       success: function (data) {
+  //         var yearSelect = document.getElementById("year-select");
+  //         yearSelect.innerHTML = ""; // Clear all options
+  //         data.forEach(function (year) {
+  //           var option = document.createElement("option");
+  //           option.value = year;
+  //           option.text = year;
+  //           yearSelect.add(option);
+  //         });
+  //       },
+  //     });
+  //   }
+  // }
+</script>
+{% endblock %}

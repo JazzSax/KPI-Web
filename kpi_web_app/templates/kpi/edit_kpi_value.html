@@ -1,0 +1,99 @@
+{% extends "base.html" %} {% load static %}
+<h1>Edit KPI Values</h1>
+<form id="edit-form" method="post" onsubmit="confirmSubmission(event)">
+  {% csrf_token %}
+
+  <h2>Quarterly Values</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Quarter</th>
+        <th>Actual Value</th>
+        <th>Target Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for value in quarterly_values %}
+      <tr>
+        <td>Quarter {{ value.quarter }}</td>
+        <td>
+          <input
+            type="number"
+            step="0.01"
+            name="quarter_actual_{{ value.pk }}"
+            value="{{ value.actual_value }}"
+            required
+          />
+        </td>
+        <td>{{ value.target_value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Monthly Values</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Month</th>
+        <th>Actual Value</th>
+        <th>Target Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for value in monthly_values %}
+      <tr>
+        <td>Month {{ value.month }}</td>
+        <td>
+          <input
+            type="number"
+            step="0.01"
+            name="month_actual_{{ value.pk }}"
+            value="{{ value.actual_value }}"
+            required
+          />
+        </td>
+        <td>{{ value.target_value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <h2>Weekly Values</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>Week</th>
+        <th>Actual Value</th>
+        <th>Target Value</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for value in weekly_values %}
+      <tr>
+        <td>Week {{ value.week }}</td>
+        <td>
+          <input
+            type="number"
+            step="0.01"
+            name="week_actual_{{ value.pk }}"
+            value="{{ value.actual_value }}"
+            required
+          />
+        </td>
+        <td>{{ value.target_value }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  <button type="submit">Save All</button>
+</form>
+<script>
+  function confirmSubmission(event) {
+    event.preventDefault();
+    if (confirm("Are you sure you want to save these changes?")) {
+      document.getElementById("edit-form").submit();
+    }
+  }
+</script>

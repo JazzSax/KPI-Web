@@ -1,0 +1,23 @@
+{% extends "base.html" %} {% load static %}
+<!-- {% block title %}Accounts View{% endblock %}  -->
+
+{% block content %}
+<div class="bg-light p-3" style="height: 100px">
+  <h2>Add Account</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item">
+        <a href="{% url 'accounts:view-accounts' %}">Accounts</a>
+      </li>
+      <li class="breadcrumb-item active" aria-current="page">Create Account</li>
+    </ol>
+  </nav>
+</div>
+
+<div class="container mt-5">
+  <form method="post">
+    {% csrf_token %} {{ form.as_p }}
+    <button type="submit" class="btn btn-primary">Create Account</button>
+  </form>
+</div>
+{% endblock %}

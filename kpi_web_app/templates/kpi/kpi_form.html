@@ -1,0 +1,154 @@
+<div class="mt-5">
+  <h2>Quarterly Values</h2>
+  <table class="table table-striped" id="quarter-table">
+    <thead>
+      <tr>
+        <th scope="col">Quarter</th>
+        {% for form in quarterly_forms %}
+        <th scope="col">Quarter {{ form.instance.quarter }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Actual</td>
+        {% for form in quarterly_forms %}
+        <td class="actual">{{ form.instance.actual_value }}</td>
+        {% endfor %}
+      </tr>
+      <tr>
+        <td scope="row">Target</td>
+        {% for form in quarterly_forms %}
+        <td class="target">{{ form.instance.target_value }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Monthly Values</h2>
+  <table class="table table-striped" id="monthly-table">
+    <thead>
+      <tr>
+        <th scope="col">Month</th>
+        {% for form in monthly_forms %}
+        <th scope="col">Month {{ form.instance.month }}</th>
+        {% endfor %}
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td scope="row">Actual</td>
+        {% for form in monthly_forms %}
+        <td class="actual">{{ form.instance.actual_value }}</td>
+        {% endfor %}
+      </tr>
+      <tr>
+        <td scope="row">Target</td>
+        {% for form in monthly_forms %}
+        <td class="target">{{ form.instance.target_value }}</td>
+        {% endfor %}
+      </tr>
+    </tbody>
+  </table>
+
+  <h2>Weekly Values</h2>
+  <div class="mw-100 overflow-x-auto">
+    <table class="table table-striped" id="weekly-table">
+      <thead>
+        <tr>
+          <th scope="col">Week</th>
+          {% for form in weekly_forms %}
+          <th scope="col">Week {{ form.instance.week }}</th>
+          {% endfor %}
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <td scope="row">Actual</td>
+          {% for form in weekly_forms %}
+          <td class="actual">{{ form.instance.actual_value }}</td>
+          {% endfor %}
+        </tr>
+        <tr>
+          <td scope="row">Target</td>
+          {% for form in weekly_forms %}
+          <td class="target">{{ form.instance.target_value }}</td>
+          {% endfor %}
+        </tr>
+      </tbody>
+    </table>
+
+    <form onSubmit="go_to_edit(event)">
+      <button type="submit" class="btn btn-primary">Edit</button>
+    </form>
+  </div>
+</div>
+<script>
+  function logSubmit(event) {
+    event.preventDefault();
+    console.log(`Form Submitted! Timestamp: ${event.timeStamp}`);
+    const kpi = document.getElementById("kpi-select").value;
+    const calamba_kpi = document.getElementById("calamba-kpi-select").value;
+    const year = document.getElementById("year-select").value;
+    console.log("kpi", kpi);
+    console.log("calamba kpi", calamba_kpi);
+    console.log("year", year);
+    if (kpi && calamba_kpi && year) {
+      $.ajax({
+        url: '{% url "ajax_get_kpi_values" %}',
+        data: {
+          kpi_id: kpi,
+          calamba_kpi: calamba_kpi,
+          year: year,
+        },
+        success: function (data) {
+          updateTable("quarter-table", data.quarterly_forms, "Quarter");
+          updateTable("monthly-table", data.monthly_forms, "Month");
+          updateTable("weekly-table", data.weekly_forms, "Week");
+        },
+      });
+    }
+  }
+
+  function updateTable(tableId, forms, periodLabel, modelName) {
+    const table = document.getElementById(tableId);
+    const headerRow = table.querySelector("thead tr");
+    const actualRow = table.querySelector("tbody tr:nth-child(1)");
+    const targetRow = table.querySelector("tbody tr:nth-child(2)");
+
+    headerRow.innerHTML = `<th scope="col">${periodLabel}</th>`;
+    actualRow.innerHTML = `<td scope="row">Actual</td>`;
+    targetRow.innerHTML = `<td scope="row">Target</td>`;
+
+    forms.forEach(function (form) {
+      const header = document.createElement("th");
+      header.textContent =
+        periodLabel + " " + (form.week || form.month || form.quarter);
+      headerRow.appendChild(header);
+
+      const actualCell = document.createElement("td");
+      actualCell.className =
+        form.actual_value > form.target_value ? "bg-success" : "bg-danger";
+      actualCell.textContent = form.actual_value;
+      actualRow.appendChild(actualCell);
+
+      const targetCell = document.createElement("td");
+      targetCell.className = "bg-success";
+      targetCell.textContent = form.target_value;
+      targetRow.appendChild(targetCell);
+    });
+  }
+
+  function go_to_edit(event) {
+    event.preventDefault();
+    const kpi = document.getElementById("calamba-kpi-select").value;
+    const year = document.getElementById("year-select").value;
+
+    if (kpi && year) {
+      const editUrl = `{% url 'edit_kpi_values' 0 0 %}`
+        .replace("0", kpi)
+        .replace("0", year);
+      window.location.href = editUrl;
+    }
+  }
+</script>

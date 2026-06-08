@@ -1,0 +1,97 @@
+{% extends "base.html" %} {% load static %}
+<!-- {% block title %}Accounts View{% endblock %}  -->
+
+{% block content %}
+<div class="bg-light p-3" style="height: 100px">
+  <h2>Account Page</h2>
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb">
+      <li class="breadcrumb-item active" aria-current="page">Account</li>
+    </ol>
+  </nav>
+</div>
+<div class="container">
+  <div class="d-flex flex-shrink-0 m-3">
+    <input
+      type="text"
+      id="employeeFilter"
+      placeholder="Enter Employee ID"
+      onkeyup="filterTable()"
+      class="m-3"
+    />
+    <button
+      type="button"
+      class="btn btn-primary m-3"
+      onclick="redirectToAddAccount()"
+    >
+      Create Account
+    </button>
+  </div>
+
+  <div id="table-container">
+    <table class="table">
+      <thead class="thead-dark">
+        <tr>
+          <th scope="col">Employee Number</th>
+          <th scope="col">Name</th>
+          <th scope="col">role</th>
+          <th scope="col">KPI</th>
+          <th scope="col"></th>
+          <th scope="col"></th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+          <th scope="row">312312</th>
+          <th>John Bernard Sahagun</th>
+          <th>Admin</th>
+          <th>Equipment Delivery</th>
+          <th><a href="{% url 'accounts:edit-account' 412421 %}">Edit</a></th>
+          <th><a href="#">Delete</a></th>
+        </tr>
+        <tr>
+          <th>412314</th>
+          <th>John Bernard Sahagun</th>
+          <th>Admin</th>
+          <th>Equipment Delivery</th>
+          <th><a href="{% url 'accounts:edit-account' 412421  %}">Edit</a></th>
+          <th><a href="#">Delete</a></th>
+        </tr>
+        <tr>
+          <th>112313</th>
+          <th>John Bernard Sahagun</th>
+          <th>Admin</th>
+          <th>Equipment Delivery</th>
+          <th><a href="{% url 'accounts:edit-account' 412421 %}">Edit</a></th>
+          <th><a href="#">Delete</a></th>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<script>
+  function filterTable() {
+    const input = document.getElementById("employeeFilter");
+    const filter = input.value.toUpperCase();
+    const table = document.querySelector(".table");
+    const tr = table.getElementsByTagName("tr");
+
+    for (let i = 1; i < tr.length; i++) {
+      const th = tr[i].getElementsByTagName("th")[0];
+      if (th) {
+        const txtValue = th.textContent || th.innerText;
+        if (txtValue.toUpperCase().indexOf(filter) > -1) {
+          tr[i].style.display = "";
+        } else {
+          tr[i].style.display = "none";
+        }
+      }
+    }
+  }
+  function redirectToAddAccount() {
+    window.location.href = "{% url 'accounts:add_account' %}";
+  }
+</script>
+
+{% endblock %}
